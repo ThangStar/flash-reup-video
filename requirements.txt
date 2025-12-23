@@ -1,3 +1,6 @@
 rich
 flask
 werkzeug
+flask-socketio
+python-socketio
+eventlet
