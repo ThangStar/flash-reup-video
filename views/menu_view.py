@@ -19,7 +19,7 @@ class MenuView:
         """Display application banner."""
         banner = Text()
         banner.append("🎬 ", style="bold yellow")
-        banner.append("VIDEO EXPORT SERVER", style="bold cyan")
+        banner.append("EOS REUP VIDEO SERVER", style="bold cyan")
         banner.append(" 🎬", style="bold yellow")
         
         panel = Panel(
@@ -44,10 +44,10 @@ class MenuView:
         table.add_column("Option", style="bold magenta", width=8)
         table.add_column("Description", style="white")
         
-        table.add_row("1", "🎥 Test Export - Thử xuất video từ test.mp4 và test.mp3")
-        table.add_row("2", "🌐 Run Socket Server - Chạy server socket nhận video")
-        table.add_row("3", "⚙️  Settings - Cài đặt GPU và cấu hình")
-        table.add_row("4", "🚪 Exit - Thoát chương trình")
+        table.add_row("1", "Test Export - Thử xuất video từ test.mp4 và test.mp3")
+        table.add_row("2", "Start Socket Server - Khởi chạy Server")
+        table.add_row("3", "Settings - Cài đặt GPU và cấu hình")
+        table.add_row("4", "Exit - Thoát chương trình")
         
         console.print(table)
         console.print()

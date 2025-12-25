@@ -97,3 +97,92 @@ class ServerView:
         )
         console.print(panel)
         console.print()
+
+    @staticmethod
+    def create_dashboard_layout():
+        """Create the main dashboard layout."""
+        from rich.layout import Layout
+        layout = Layout()
+        layout.split_row(
+            Layout(name="left", size=50),
+            Layout(name="right")
+        )
+        return layout
+
+    @staticmethod
+    def get_status_panel_content(port=8000):
+        """Generate content for the status panel."""
+        local_ip = ServerView.get_local_ip()
+        
+        # Grid for info
+        table = Table(show_header=False, box=None, padding=(0, 1), expand=True)
+        table.add_column("Label", style="bold cyan")
+        table.add_column("Value", style="bold green")
+        
+        table.add_row("🌐 IP:", local_ip)
+        table.add_row("🔌 Port:", str(port))
+        table.add_row("📡 Status:", "POLLING")
+        table.add_row("", "")
+        table.add_row("Queue:", "Supabase video_enqueue")
+        
+        # Instructions slightly different for panel
+        instructions = Text()
+        instructions.append("\n📝 Instructions:\n", style="bold yellow")
+        instructions.append("Server is polling for jobs.\n", style="white")
+        instructions.append("Press Ctrl+C to stop.", style="dim")
+        
+        from rich.console import Group
+        content = Group(
+            Text("✅ SERVER RUNNING", style="bold green justify-center"),
+            Text("─" * 30, style="dim justify-center"),
+            table,
+            instructions
+        )
+        
+        return Panel(
+            content,
+            title="[bold yellow]STATUS[/bold yellow]",
+            border_style="bright_blue",
+            box=box.ROUNDED,
+            padding=(1, 2),
+            expand=True
+        )
+
+    @staticmethod
+    def get_log_panel_content(log_lines):
+        """Generate content for the log panel."""
+        # Calculate max visible lines roughly to keep buffer sane
+        # But rely on Panel(expand=True) for sizing
+        # Using -6 for safety margin against headers/borders
+        max_lines = max(10, console.height - 6)
+        
+        # Sanitize logs: remove newlines from individual entries to ensure
+        # 1 list item = 1 visual line.
+        clean_logs = [str(line).replace('\n', ' ').replace('\r', '') for line in log_lines]
+        
+        visible_lines = clean_logs[-max_lines:]
+        
+        # Pad with empty lines to maintain stable height
+        if len(visible_lines) < max_lines:
+            padding_needed = max_lines - len(visible_lines)
+            # Add padding at the top so logs appear at the bottom
+            visible_lines = [""] * padding_needed + visible_lines
+
+        # Join lines, assuming they are markup strings
+        # Align left to ensure clean look
+        text_content = "\n".join(visible_lines)
+        
+        # Create text object and set properties separately for compatibility
+        log_text = Text.from_markup(text_content)
+        log_text.overflow = "ellipsis"
+        log_text.no_wrap = True
+        
+        return Panel(
+            log_text,
+            title="[bold white]LOGS[/bold white]",
+            border_style="white",
+            box=box.ROUNDED,
+            padding=(0, 1),
+            style="white",
+            expand=True
+        )

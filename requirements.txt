@@ -1,6 +1,6 @@
 rich
 flask
 werkzeug
-flask-socketio
-python-socketio
-eventlet
+supabase
+google-cloud-storage
+requests

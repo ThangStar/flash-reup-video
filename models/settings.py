@@ -6,10 +6,12 @@ import json
 
 class Settings:
     """Application configuration settings."""
-    
+    GCP_BUCKET_NAME = "eos_pages_content"
     # Server settings
     SERVER_HOST = "0.0.0.0"
     SERVER_PORT = 5000
+    SUPABASE_SERVICE_ROLE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNrcmZubGVhcnl3Z3B2c3dwaXd2Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2MjM5MjUyMiwiZXhwIjoyMDc3OTY4NTIyfQ.M34tGRDB6892s-ZxZ3TKrEsW2FZFPawyzQ5VPxI4S6I"
+    SUPABASE_URL = "https://ckrfnlearywgpvswpiwv.supabase.co"
     
     # Directory settings
     BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))

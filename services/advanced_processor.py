@@ -7,6 +7,8 @@ from datetime import datetime, timedelta
 from models.processing_params import ProcessingParams
 
 
+
+
 def hex_to_rgb(hex_color):
     """Convert hex color to RGB tuple."""
     hex_color = hex_color.lstrip('#')
@@ -45,9 +47,10 @@ def process_video_with_effects(
     """
     
     def log(message):
-        print(message)
         if progress_callback:
             progress_callback(message)
+        else:
+            print(message)
     
     try:
         # Validate parameters
@@ -73,6 +76,7 @@ def process_video_with_effects(
         try:
             duration_cmd = ["ffprobe", "-v", "error", "-show_entries", "format=duration",
                           "-of", "default=noprint_wrappers=1:nokey=1", video_path]
+            # Also tpool this check just in case
             video_duration = float(subprocess.check_output(duration_cmd, universal_newlines=True).strip())
             log(f"📏 Duration: {video_duration:.2f}s")
         except Exception as e:
@@ -292,14 +296,20 @@ def process_video_with_effects(
         log(' '.join(f'"{arg}"' if ' ' in arg else arg for arg in ffmpeg_cmd))
         
         # Capture both stdout and stderr for debugging
-        process = subprocess.run(
-            ffmpeg_cmd, 
-            check=True, 
-            capture_output=True, 
-            text=True, 
-            encoding='utf-8',
-            errors='replace'
-        )
+        log("🐛 DEBUG: About to execute FFmpeg...")
+        
+        def run_ffmpeg():
+            return subprocess.run(
+                ffmpeg_cmd, 
+                check=True, 
+                capture_output=True, 
+                text=True, 
+                encoding='utf-8',
+                errors='replace'
+            )
+            
+        process = run_ffmpeg()
+        log("🐛 DEBUG: FFmpeg execution completed.")
         
         # Log any FFmpeg output (usually goes to stderr)
         if process.stderr:

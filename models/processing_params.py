@@ -81,3 +81,19 @@ class ProcessingParams:
             intro_animation=data.get('intro_animation', 'none'),
             intro_duration=float(data.get('intro_duration', 2.0))
         )
+    
+    def to_dict(self):
+        """Convert ProcessingParams to dictionary."""
+        return {
+            'original_audio_volume': self.original_audio_volume,
+            'uploaded_audio_volume': self.uploaded_audio_volume,
+            'audio_noise': self.audio_noise,
+            'video_speed': self.video_speed,
+            'zoom_factor': self.zoom_factor,
+            'saturation': self.saturation,
+            'color_overlay': self.color_overlay,
+            'color_overlay_opacity': self.color_overlay_opacity,
+            'intro_animation': self.intro_animation,
+            'intro_duration': self.intro_duration
+        }
+

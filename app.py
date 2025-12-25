@@ -3,6 +3,11 @@ Main application entry point with terminal menu.
 Beautiful terminal UI with MVC architecture.
 """
 
+
+# import eventlet
+# eventlet.monkey_patch() # Removed for WorkerService refactor
+
+
 from views.menu_view import MenuView
 from controllers.export_controller import ExportController
 from controllers.server_controller import ServerController
