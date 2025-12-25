@@ -110,9 +110,17 @@ def process_video_with_effects(
         # 3. Zoom
         if params.zoom_factor != 1.0:
             zoom = params.zoom_factor
-            video_filters.append(f"scale=iw*{zoom}:ih*{zoom}")
+            # Calculate integer dimensions in Python to avoid float issues in FFmpeg
+            z_width = int(target_width * zoom)
+            z_height = int(target_height * zoom)
+            
+            # Ensure dimensions are even (required for some codecs)
+            z_width -= z_width % 2
+            z_height -= z_height % 2
+            
+            video_filters.append(f"scale={z_width}:{z_height}")
             video_filters.append(f"crop={target_width}:{target_height}")
-            log(f"🔍 Zoom: {zoom}x")
+            log(f"🔍 Zoom: {zoom}x ({z_width}x{z_height})")
         
         # 4. Saturation (for black & white or color adjustments)
         if params.saturation != 1.0:
@@ -188,7 +196,7 @@ def process_video_with_effects(
                 f"anoisesrc=d={video_duration}:c=pink:r=48000:a={noise_amount}[noise]"
             )
             audio_filters.append(
-                f"{uploaded_audio_label}[noise]amix=inputs=2:duration=first[upload_a_noisy]"
+                f"{uploaded_audio_label}[noise]amix=inputs=2:duration=first:normalize=0[upload_a_noisy]"
             )
             uploaded_audio_label = "[upload_a_noisy]"
             log(f"🔉 Audio noise: {int(noise_amount*100)}%")
@@ -204,7 +212,8 @@ def process_video_with_effects(
             )
         
         # 5. Mix original and uploaded audio
-        audio_filters.append("[orig_a][upload_final]amix=inputs=2:duration=longest[a_out]")
+        # Add normalize=0 to prevent volume drop when mixing
+        audio_filters.append("[orig_a][upload_final]amix=inputs=2:duration=longest:normalize=0[a_out]")
         
         # Combine all filters
         filter_complex = ";".join([full_video_filter] + audio_filters)
