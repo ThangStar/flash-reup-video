@@ -23,6 +23,24 @@ def check_gpu_available(gpu_type="nvidia"):
     gpu_type = gpu_type.lower()
     
     if gpu_type == "nvidia":
+        # Check if ffmpeg has nvenc support
+        try:
+            # Check for h264_nvenc or hevc_nvenc in ffmpeg encoders
+            result = subprocess.run(
+                ["ffmpeg", "-hide_banner", "-encoders"],
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                timeout=5,
+                text=True
+            )
+            if "h264_nvenc" in result.stdout:
+                return True, "h264_nvenc"
+            elif "hevc_nvenc" in result.stdout:
+                return True, "hevc_nvenc"
+        except (FileNotFoundError, subprocess.TimeoutExpired):
+            # Fallback to nvidia-smi check if ffmpeg check fails
+            pass
+            
         try:
             result = subprocess.run(
                 ["nvidia-smi"],
@@ -31,6 +49,7 @@ def check_gpu_available(gpu_type="nvidia"):
                 timeout=5
             )
             if result.returncode == 0:
+                # Assuming ffmpeg supports it if card is present, though risky if ffmpeg build is poor
                 return True, "h264_nvenc"
         except (FileNotFoundError, subprocess.TimeoutExpired):
             pass

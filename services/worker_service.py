@@ -150,6 +150,7 @@ class WorkerService:
                 audio_path=audio_path,
                 output_path=output_path,
                 params=params,
+                fake_metadata=params.fake_metadata_capcut,
                 progress_callback=progress_callback
             )
             
@@ -182,7 +183,7 @@ class WorkerService:
         data = {
             'status': status,
             'message': message,
-            'updatedAt': 'now()'
+            'updated_at': 'now()'
         }
         if url:
             data['url'] = url

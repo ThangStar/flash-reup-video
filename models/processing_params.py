@@ -26,6 +26,9 @@ class ProcessingParams:
     intro_animation: str = "none"  # none, blur_to_clear, fade_in
     intro_duration: float = 2.0
     
+    # Metadata
+    fake_metadata_capcut: bool = False
+    
     def validate(self):
         """Validate parameter ranges."""
         errors = []
@@ -79,7 +82,8 @@ class ProcessingParams:
             color_overlay=data.get('color_overlay'),
             color_overlay_opacity=float(data.get('color_overlay_opacity', 0.0)),
             intro_animation=data.get('intro_animation', 'none'),
-            intro_duration=float(data.get('intro_duration', 2.0))
+            intro_duration=float(data.get('intro_duration', 2.0)),
+            fake_metadata_capcut=bool(data.get('fake_metadata_capcut', False))
         )
     
     def to_dict(self):
@@ -94,6 +98,7 @@ class ProcessingParams:
             'color_overlay': self.color_overlay,
             'color_overlay_opacity': self.color_overlay_opacity,
             'intro_animation': self.intro_animation,
-            'intro_duration': self.intro_duration
+            'intro_duration': self.intro_duration,
+            'fake_metadata_capcut': self.fake_metadata_capcut
         }
 
